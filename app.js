@@ -2,7 +2,7 @@ var sentencesArray = []; // Array to store sentences
 var map = L.map('map').setView([0, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// Add drawing controls
+// drawing controls
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
@@ -22,11 +22,10 @@ map.on('draw:created', function (e) {
   var latitude = latlng.lat;
   var longitude = latlng.lng;
 
-  // Separate API key for better organization
-  var openWeatherMapAPIKey = '4bbc8c0707f55312541a493a5b8068ac'; // Replace with your API key
+  var openWeatherMapAPIKey = '4bbc8c0707f55312541a493a5b8068ac'; 
   var forecastAPIUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=' + openWeatherMapAPIKey;
 
-  var forecastList; // Move the declaration here
+  var forecastList;
 
   fetch(forecastAPIUrl)
     .then(response => response.json())
@@ -42,7 +41,7 @@ map.on('draw:created', function (e) {
         sentencesArray.push(sentence);
       });
 
-      // Now sentencesArray contains the weather information as sentences
+      // sentencesArray contains the weather information as sentences
 
       // Extract relevant forecast information
       var forecastDisplay = document.getElementById('forecast-display');
@@ -52,14 +51,14 @@ map.on('draw:created', function (e) {
         forecastDisplay.innerHTML += '<p>' + sentence + '</p>';
       });
       
-      // Create arrays to store temperature and humidity data for each day
+      // Create arays to store temperature and humidity data for eac day
       var labels = [];
       var temperatures = [];
       var humidityValues = [];
 
       for (var i = 0; i < forecastList.length; i++) {
         var forecastTime = new Date(forecastList[i].dt * 1000);
-        var temperature = forecastList[i].main.temp - 273.15; // Convert temperature from Kelvin to Celsius
+        var temperature = forecastList[i].main.temp - 273.15; // Convert
         var humidity = forecastList[i].main.humidity;
 
         // Store temperature and humidity data for each day
@@ -68,7 +67,6 @@ map.on('draw:created', function (e) {
         humidityValues.push(humidity);
       }
 
-      // Create a canvas element for the line graph
       var ctx = document.getElementById('chart-graph').getContext('2d');
       new Chart(ctx, {
         type: 'line',
@@ -95,12 +93,12 @@ map.on('draw:created', function (e) {
               time: {
                 unit: 'day',
                 displayFormats: {
-                  day: 'MMM D' // Format for displaying days
+                  day: 'MMM D' // Format
                 }
               },
               position: 'bottom',
               ticks: {
-                maxRotation: 0, // Disable rotation
+                maxRotation: 0, 
                 autoSkip: true,
                 maxTicksLimit: 10 // Adjust the maximum number of visible ticks
               }
@@ -134,7 +132,6 @@ map.on('draw:created', function (e) {
     })
     .catch(error => {
         console.error('Error fetching weather forecast data:', error);
-        // Display an error message to the user in case of API request failure
         var forecastDisplay = document.getElementById('forecast-display');
         forecastDisplay.innerHTML = '<p>Error fetching weather forecast data. Please try again later.</p>';
       });
