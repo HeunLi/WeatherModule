@@ -42,8 +42,45 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <textarea name="response" id="response" cols="30" rows="10" disabled></textarea>
 
+  <script src="app.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+  <script type="module">
+
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    // Fetch your API_KEY
+    const API_KEY = "AIzaSyBPanE-reNc0_99QOPpcZ6vCqu_bx1AAGY";
+
+    // Access your API key (see "Set up your API key" above)
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    // ...
+    
+    
+
+    async function run() {
+      // For text-only input, use the gemini-pro model
+      const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+      
+      const prompt = "Write a story about a magic backpack."
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+
+      document.getElementById("response").value= text;
+    }
+    
+    run();
+  </script>
   <!-- Bootstrap JS and Popper.js -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-U6u1f5XRKt1Ic1ZbBmDP9P7dYUAfxaPdMAeQOM6Fpxm1Klt5YbB9jOMhS15fZzN" crossorigin="anonymous"></script>

@@ -1,3 +1,4 @@
+var sentencesArray = []; // Array to store sentences
 var map = L.map('map').setView([0, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -30,21 +31,27 @@ map.on('draw:created', function (e) {
   fetch(forecastAPIUrl)
     .then(response => response.json())
     .then(data => {
-      forecastList = data.list; // Assign value here
+      forecastList = data.list;
+
+      forecastList.forEach(item => {
+        var forecastTime = new Date(item.dt * 1000);
+        var forecastConditions = item.weather[0].description;
+        var humidity = item.main.humidity;
+        var sentence = 'On ' + forecastTime.toLocaleDateString() + ' at ' + forecastTime.toLocaleTimeString() +
+          ', the weather will be ' + forecastConditions + ' with humidity of ' + humidity + '%.';
+        sentencesArray.push(sentence);
+      });
+
+      // Now sentencesArray contains the weather information as sentences
 
       // Extract relevant forecast information
       var forecastDisplay = document.getElementById('forecast-display');
       forecastDisplay.innerHTML = ''; // Clear previous content
 
-      for (var i = 0; i < forecastList.length; i++) {
-        var forecastTime = new Date(forecastList[i].dt * 1000);
-        var forecastConditions = forecastList[i].weather[0].description;
-        var humidity = forecastList[i].main.humidity;
-        var sentence = 'On ' + forecastTime.toLocaleDateString() + ' at ' + forecastTime.toLocaleTimeString() +
-          ', the weather will be ' + forecastConditions + ' with humidity of ' + humidity + '%.';
+      sentencesArray.forEach(sentence => {
         forecastDisplay.innerHTML += '<p>' + sentence + '</p>';
-      }
-
+      });
+      
       // Create arrays to store temperature and humidity data for each day
       var labels = [];
       var temperatures = [];
@@ -126,9 +133,11 @@ map.on('draw:created', function (e) {
       });
     })
     .catch(error => {
-      console.error('Error fetching weather forecast data:', error);
-      // Display an error message to the user in case of API request failure
-      var forecastDisplay = document.getElementById('forecast-display');
-      forecastDisplay.innerHTML = '<p>Error fetching weather forecast data. Please try again later.</p>';
-    });
-});
+        console.error('Error fetching weather forecast data:', error);
+        // Display an error message to the user in case of API request failure
+        var forecastDisplay = document.getElementById('forecast-display');
+        forecastDisplay.innerHTML = '<p>Error fetching weather forecast data. Please try again later.</p>';
+      });
+
+      
+  });
