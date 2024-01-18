@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leaflet Map with Drawing and 5-Day Weather Forecast</title>
 
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <!-- Leaflet JavaScript -->
+  
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- Leaflet.draw CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
 
-  <!-- Leaflet.draw JavaScript -->
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
+
 <body>
 
   <div class="container mt-4">
@@ -29,66 +28,24 @@
       </div>
       <div class="col-md-6">
         <!-- Forecast display field with scrollable box -->
-        <div id="forecast-display" class="mt-3" style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
+        <div id="forecast-display" class="mt-3"
+          style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    var map = L.map('map').setView([0, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    // Add drawing controls
-    var drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
-
-    var drawControl = new L.Control.Draw({
-      edit: {
-        featureGroup: drawnItems
-      }
-    });
-
-    map.addControl(drawControl);
-
-    map.on('draw:created', function (e) {
-      var layer = e.layer;
-      drawnItems.addLayer(layer);
-
-      var latlng = layer.getBounds().getCenter(); // Get the center of the drawn area
-      var latitude = latlng.lat;
-      var longitude = latlng.lng;
-
-      // Fetch 5-day weather forecast from OpenWeatherMap API
-      var openWeatherMapAPIKey = '4bbc8c0707f55312541a493a5b8068ac';
-      var forecastAPIUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=' + openWeatherMapAPIKey;
-
-      fetch(forecastAPIUrl)
-        .then(response => response.json())
-        .then(data => {
-          // Extract relevant forecast information
-          var forecastList = data.list;
-
-          // Display the 5-day weather forecast in sentence format
-          var forecastDisplay = document.getElementById('forecast-display');
-          forecastDisplay.innerHTML = ''; // Clear previous content
-
-          for (var i = 0; i < forecastList.length; i++) {
-            var forecastTime = new Date(forecastList[i].dt * 1000);
-            var forecastConditions = forecastList[i].weather[0].description;
-            var sentence = 'On ' + forecastTime.toLocaleDateString() + ' at ' + forecastTime.toLocaleTimeString() + ', the weather will be ' + forecastConditions + '.';
-
-            // Append forecast sentence to the box
-            forecastDisplay.innerHTML += '<p>' + sentence + '</p>';
-          }
-        })
-        .catch(error => console.error('Error fetching weather forecast data:', error));
-    });
-  </script>
+  <script src="app.js"></script>
 
   <!-- Bootstrap JS and Popper.js -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-U6u1f5XRKt1Ic1ZbBmDP9P7dYUAfxaPdMAeQOM6Fpxm1Klt5YbB9jOMhS15fZzN" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-U6u1f5XRKt1Ic1ZbBmDP9P7dYUAfxaPdMAeQOM6Fpxm1Klt5YbB9jOMhS15fZzN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
 
 </body>
+
 </html>
