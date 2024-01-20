@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +11,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
+
 <body>
 
   <div class="container mt-4">
@@ -21,7 +24,8 @@
         <div id="map" style="height: 400px;"></div>
       </div>
       <div class="col-md-6">
-        <div id="forecast-display" class="mt-3" style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
+        <div id="forecast-display" class="mt-3"
+          style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
       </div>
     </div>
 
@@ -41,42 +45,48 @@
     }
   </script>
   <script type="module">
-  import { GoogleGenerativeAI } from "@google/generative-ai";
-  // Wait for the DOM content to be loaded
-  document.addEventListener('DOMContentLoaded', async function () {
-    // Access the sentencesArray after app.js is loaded
-    console.log(sentencesArray);
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    // Wait for the DOM content to be loaded
+    document.addEventListener('DOMContentLoaded', async function () {
+      // Access the sentencesArray after app.js is loaded
+      console.log(sentencesArray);
 
-    // Fetch your API_KEY
-    const API_KEY = "AIzaSyBPanE-reNc0_99QOPpcZ6vCqu_bx1AAGY";
+      // Fetch your API_KEY
+      const API_KEY = "AIzaSyBPanE-reNc0_99QOPpcZ6vCqu_bx1AAGY";
 
-    // Access your API key (see "Set up your API key" above)
-    const genAI = new GoogleGenerativeAI(API_KEY);
+      // Access your API key (see "Set up your API key" above)
+      const genAI = new GoogleGenerativeAI(API_KEY);
 
-    // ...
+      // ...
 
-    async function run() {
-      // For text-only input, use the gemini-pro model
-      const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-      let combinedSentences = sentencesArray.join(' ');
-      console.log(combinedSentences);
-      const prompt = combinedSentences;
+      async function run() {
+        // For text-only input, use the gemini-pro model
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        let combinedSentences = sentencesArray.join(' ');
+        console.log(combinedSentences);
+        const prompt = "With the given text, paraphrase it and summarize it for better readability." + combinedSentences + "Then based on this given input, hypothetically recommend what farmers ought to do on each day.";
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
 
-      document.getElementById("response").value = text;
-    }
-
-    run();
-  });
-</script>
+        document.getElementById("response").value = text;
+      }
+      document.getElementById("runButton").addEventListener("click", run);
+    });
   </script>
+  <button id="runButton">Run</button>
+  
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-U6u1f5XRKt1Ic1ZbBmDP9P7dYUAfxaPdMAeQOM6Fpxm1Klt5YbB9jOMhS15fZzN" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-U6u1f5XRKt1Ic1ZbBmDP9P7dYUAfxaPdMAeQOM6Fpxm1Klt5YbB9jOMhS15fZzN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
 
 </body>
+
 </html>
