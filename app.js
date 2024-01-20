@@ -1,4 +1,6 @@
 var sentencesArray = []; // Array to store sentences
+var longitude = "";
+var latitude = "";
 var map = L.map('map').setView([0, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -19,14 +21,15 @@ map.on('draw:created', function (e) {
   drawnItems.addLayer(layer);
 
   var latlng = layer.getBounds().getCenter();
-  var latitude = latlng.lat;
-  var longitude = latlng.lng;
+  latitude = latlng.lat;
+  longitude = latlng.lng;
 
   var openWeatherMapAPIKey = '4bbc8c0707f55312541a493a5b8068ac'; 
   var forecastAPIUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=' + openWeatherMapAPIKey;
 
   var forecastList;
-
+  console.log(latitude);
+  console.log(longitude);
   fetch(forecastAPIUrl)
     .then(response => response.json())
     .then(data => {

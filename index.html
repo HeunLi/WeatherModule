@@ -50,7 +50,8 @@
     document.addEventListener('DOMContentLoaded', async function () {
       // Access the sentencesArray after app.js is loaded
       console.log(sentencesArray);
-
+      console.log(latitude);
+      console.log(longitude);
       // Fetch your API_KEY
       const API_KEY = "AIzaSyBPanE-reNc0_99QOPpcZ6vCqu_bx1AAGY";
 
@@ -64,8 +65,9 @@
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
         let combinedSentences = sentencesArray.join(' ');
         console.log(combinedSentences);
-        const prompt = "With the given text, paraphrase it and summarize it for better readability." + combinedSentences + "Then based on this given input, hypothetically recommend what farmers ought to do on each day.";
-
+        const prompt = "With the given text, paraphrase it and summarize it for better readability." + combinedSentences + "Then based on this given input, hypothetically recommend what farmers ought to do on each day." + "After that, based off the given Latitude: " + latitude + " and Longitude: " + longitude + "%." + " Translate the datas of Latitude and Longitude into its respective location name on the globe.";
+        console.log(latitude);
+        console.log(longitude);
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
