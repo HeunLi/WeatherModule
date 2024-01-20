@@ -59,20 +59,12 @@
 
       // ...
 
-
       async function run() {
         // For text-only input, use the gemini-pro model
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
         let combinedSentences = sentencesArray.join(' ');
         console.log(combinedSentences);
         const prompt = "With the given text, paraphrase it and summarize it for better readability." + combinedSentences + "Then based on this given input, hypothetically recommend what farmers ought to do on each day.";
-
-    async function run() {
-
-      const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-      let combinedSentences = sentencesArray.join(' ');
-      console.log(combinedSentences);
-      const prompt = combinedSentences;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
