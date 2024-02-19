@@ -16,6 +16,8 @@ var drawControl = new L.Control.Draw({
 
 map.addControl(drawControl);
 
+var myChart; // Define myChart here
+
 map.on('draw:created', function (e) {
   var layer = e.layer;
   drawnItems.addLayer(layer);
@@ -54,7 +56,7 @@ map.on('draw:created', function (e) {
         forecastDisplay.innerHTML += '<p>' + sentence + '</p>';
       });
       
-      // Create arays to store temperature and humidity data for eac day
+      // Create arrays to store temperature and humidity data for each day
       var labels = [];
       var temperatures = [];
       var humidityValues = [];
@@ -70,68 +72,8 @@ map.on('draw:created', function (e) {
         humidityValues.push(humidity);
       }
 
-      var ctx = document.getElementById('chart-graph').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Temperature (°C)',
-            data: temperatures,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-            fill: false
-          }, {
-            label: 'Humidity (%)',
-            data: humidityValues,
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            fill: false
-          }]
-        },
-        options: {
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: 'day',
-                displayFormats: {
-                  day: 'MMM D' // Format
-                }
-              },
-              position: 'bottom',
-              ticks: {
-                maxRotation: 0, 
-                autoSkip: true,
-                maxTicksLimit: 10 // Adjust the maximum number of visible ticks
-              }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Temperature (°C) / Humidity (%)'
-              },
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          },
-          tooltips: {
-            mode: 'index', // Display multiple tooltips when hovering over one data point
-            intersect: false,
-            callbacks: {
-              title: function (tooltipItem, data) {
-                return data.labels[tooltipItem[0].index];
-              },
-              label: function (tooltipItem, data) {
-                var temperature = data.datasets[0].data[tooltipItem.index].toFixed(2);
-                var humidity = data.datasets[1].data[tooltipItem.index];
-                return 'Temperature: ' + temperature + ' °C, Humidity: ' + humidity + '%';
-              }
-            }
-          }
-        }
-      });
+      // Call the function to create or update the chart
+      createOrUpdateChart(labels, temperatures, humidityValues);
     })
     .catch(error => {
         console.error('Error fetching weather forecast data:', error);
@@ -140,4 +82,111 @@ map.on('draw:created', function (e) {
       });
 
       
+});
+
+// Function to clear the canvas and reset variables
+function clearCanvas() {
+  // Remove drawn items from the map
+  drawnItems.clearLayers();
+  
+  // Clear the sentencesArray
+  sentencesArray = [];
+
+  // Clear the forecast display
+  var forecastDisplay = document.getElementById('forecast-display');
+  forecastDisplay.innerHTML = '';
+
+  // Clear the chart if it exists
+  if (myChart) {
+    myChart.destroy();
+  }
+}
+
+// Function to create or update the chart
+function createOrUpdateChart(labels, temperatures, humidityValues) {
+  var ctx = document.getElementById('chart-graph').getContext('2d');
+  // Destroy existing chart if it exists
+  if (myChart) {
+    myChart.destroy();
+  }
+  // Create new chart
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Temperature (°C)',
+        data: temperatures,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        fill: false
+      }, {
+        label: 'Humidity (%)',
+        data: humidityValues,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        fill: false
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: {
+              day: 'MMM D' // Format
+            }
+          },
+          position: 'bottom',
+          ticks: {
+            maxRotation: 0, 
+            autoSkip: true,
+            maxTicksLimit: 10 // Adjust the maximum number of visible ticks
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Temperature (°C) / Humidity (%)'
+          },
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      },
+      tooltips: {
+        mode: 'index', // Display multiple tooltips when hovering over one data point
+        intersect: false,
+        callbacks: {
+          title: function (tooltipItem, data) {
+            return data.labels[tooltipItem[0].index];
+          },
+          label: function (tooltipItem, data) {
+            var temperature = data.datasets[0].data[tooltipItem.index].toFixed(2);
+            var humidity = data.datasets[1].data[tooltipItem.index];
+            return 'Temperature: ' + temperature + ' °C, Humidity: ' + humidity + '%';
+          }
+        }
+      }
+    }
   });
+}
+
+// Add a custom control to the map for clearing the canvas
+var clearControl = L.Control.extend({
+  options: {
+    position: 'topright' // Adjust position as needed
+  },
+
+  onAdd: function (map) {
+    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+    container.innerHTML = '<button id="clearButton" title="Clear Canvas"><img src="clear-icon.png" width="20" height="20"></button>';
+    L.DomEvent.disableClickPropagation(container); // Prevent map click events when interacting with the control
+    L.DomEvent.on(container, 'click', clearCanvas); // Attach click event to clearCanvas function
+    return container;
+  }
+});
+
+// Add the custom control to the map
+map.addControl(new clearControl());
